@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貪食蛇遊戲 - Snake Game</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐍 貪食蛇遊戲</h1>
+            <p class="subtitle">使用方向鍵或 WASD 控制蛇的移動</p>
+        </header>
+
+        <div class="game-container">
+            <div class="score-board">
+                <div class="score-item">
+                    <span class="score-label">分數</span>
+                    <span class="score-value" id="score">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">最高分</span>
+                    <span class="score-value" id="high-score">0</span>
+                </div>
+            </div>
+
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary">開始遊戲</button>
+                <button id="restartBtn" class="btn btn-secondary" style="display: none;">重新開始</button>
+            </div>
+
+            <div class="instructions">
+                <h3>遊戲說明</h3>
+                <ul>
+                    <li>使用 <strong>方向鍵</strong> 或 <strong>WASD</strong> 控制蛇的移動</li>
+                    <li>吃掉 <strong>紅色食物</strong> 來增長蛇的長度和分數</li>
+                    <li>不要撞到 <strong>牆壁</strong> 或 <strong>自己的身體</strong></li>
+                    <li>按 <strong>空格鍵</strong> 暫停/繼續遊戲</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 貪食蛇遊戲 | 使用 HTML5 Canvas 製作</p>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
