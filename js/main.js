@@ -5,6 +5,7 @@ const scoreElement = document.getElementById('score');
 const highScoreElement = document.getElementById('high-score');
 const startBtn = document.getElementById('startBtn');
 const restartBtn = document.getElementById('restartBtn');
+const pauseBtn = document.getElementById('pauseBtn');
 
 // Game Constants
 const GRID_SIZE = 20;
@@ -257,6 +258,8 @@ function startGame() {
     isGameRunning = true;
     startBtn.style.display = 'none';
     restartBtn.style.display = 'inline-block';
+    pauseBtn.style.display = 'inline-block';
+    pauseBtn.textContent = '暫停';
 
     gameLoop = setInterval(gameLoopFunction, gameSpeed);
 }
@@ -266,6 +269,26 @@ function restartGame() {
     clearInterval(gameLoop);
     isGameRunning = false;
     startGame();
+}
+
+// Toggle Pause
+function togglePause() {
+    if (!isGameRunning) return;
+
+    isPaused = !isPaused;
+
+    if (isPaused) {
+        pauseBtn.textContent = '繼續';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 30px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('暫停', CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+    } else {
+        pauseBtn.textContent = '暫停';
+    }
 }
 
 // Game Over
@@ -295,29 +318,51 @@ function gameOver() {
     startBtn.style.display = 'inline-block';
     startBtn.textContent = '重新開始';
     restartBtn.style.display = 'none';
+    pauseBtn.style.display = 'none';
 }
 
-// Toggle Pause
-function togglePause() {
-    if (!isGameRunning) return;
+// Change Direction
+function changeDirection(newDirection) {
+    if (!isGameRunning || isPaused) return;
 
-    isPaused = !isPaused;
-
-    if (isPaused) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 30px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('暫停', CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+    switch (newDirection) {
+        case 'up':
+            if (direction !== 'down') nextDirection = 'up';
+            break;
+        case 'down':
+            if (direction !== 'up') nextDirection = 'down';
+            break;
+        case 'left':
+            if (direction !== 'right') nextDirection = 'left';
+            break;
+        case 'right':
+            if (direction !== 'left') nextDirection = 'right';
+            break;
     }
 }
 
 // Event Listeners
 startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', restartGame);
+pauseBtn.addEventListener('click', togglePause);
 
+// Mobile Control Buttons
+document.querySelectorAll('.control-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const direction = btn.dataset.direction;
+        changeDirection(direction);
+    });
+
+    // Prevent double-tap zoom
+    btn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const direction = btn.dataset.direction;
+        changeDirection(direction);
+    });
+});
+
+// Keyboard Controls
 document.addEventListener('keydown', (e) => {
     // Prevent default for game keys
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', ' '].includes(e.key)) {
@@ -340,22 +385,22 @@ document.addEventListener('keydown', (e) => {
         case 'ArrowUp':
         case 'w':
         case 'W':
-            if (direction !== 'down') nextDirection = 'up';
+            changeDirection('up');
             break;
         case 'ArrowDown':
         case 's':
         case 'S':
-            if (direction !== 'up') nextDirection = 'down';
+            changeDirection('down');
             break;
         case 'ArrowLeft':
         case 'a':
         case 'A':
-            if (direction !== 'right') nextDirection = 'left';
+            changeDirection('left');
             break;
         case 'ArrowRight':
         case 'd':
         case 'D':
-            if (direction !== 'left') nextDirection = 'right';
+            changeDirection('right');
             break;
     }
 });
